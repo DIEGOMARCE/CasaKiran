@@ -1,7 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { siteConfig } from "@/lib/config";
 import { createClient } from "@/lib/supabase/server";
+import portadaImage from "@/images/portada.jpg";
+import logoImage from "@/images/logocasakiran.jpg";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -18,17 +21,29 @@ export default async function HomePage() {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="relative bg-neutral-100">
-        <div className="container-custom py-24 lg:py-32">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl lg:text-6xl font-light tracking-tight mb-6">
-              {siteConfig.name}
-            </h1>
+      <section className="bg-stone-50 py-12 lg:py-20">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-lg border-2 border-white">
+                <Image
+                  src={logoImage}
+                  alt="Logo Casa Kiran"
+                  width={80}
+                  height={80}
+                  className="object-cover w-full h-full"
+                  priority
+                />
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-light tracking-tight text-neutral-900">
+                {siteConfig.name}
+              </h1>
+            </div>
             <p className="text-lg lg:text-xl text-neutral-600 mb-8 leading-relaxed">
               {siteConfig.tagline}. Velas artesanales elaboradas con ingredientes 
               naturales para crear momentos especiales en tu hogar.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               <Link href="/catalogo" className="btn-primary">
                 Ver catálogo
               </Link>
@@ -36,6 +51,21 @@ export default async function HomePage() {
                 Conoce más
               </Link>
             </div>
+          </div>
+          
+          <div className="relative w-full max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-2xl bg-neutral-200">
+             <div className="relative aspect-[2.35/1] w-full">
+                <Image
+                    src={portadaImage}
+                    alt="Portada Casa Kiran"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-1000"
+                    priority
+                    quality={100}
+                    placeholder="blur"
+                    sizes="(max-width: 1280px) 100vw, 1280px"
+                />
+             </div>
           </div>
         </div>
       </section>
