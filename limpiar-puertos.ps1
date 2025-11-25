@@ -47,3 +47,4 @@ if ($procesosEncontrados.Count -eq 0) {
 Write-Host "`n💡 Ahora puedes ejecutar 'npm run dev' sin problemas" -ForegroundColor Cyan
 
 
+
