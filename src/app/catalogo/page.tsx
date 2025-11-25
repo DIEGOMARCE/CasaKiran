@@ -34,8 +34,8 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
     .order("created_at", { ascending: false });
 
   // Filtrar por categoría si está seleccionada
-  if (selectedCategory) {
-    const category = categories?.find((c) => c.slug === selectedCategory);
+  if (selectedCategory && categories) {
+    const category = categories.find((c: any) => c.slug === selectedCategory);
     if (category) {
       query = query.eq("category_id", category.id);
     }
@@ -76,7 +76,7 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
                   Todas
                 </a>
               </li>
-              {categories?.map((category) => (
+              {categories?.map((category: any) => (
                 <li key={category.id}>
                   <a
                     href={`/catalogo?categoria=${category.slug}`}

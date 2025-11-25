@@ -85,7 +85,7 @@ export default async function ProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-200">
-              {products.map((product) => (
+              {products.map((product: ProductWithCategory) => (
                 <tr key={product.id} className="hover:bg-neutral-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
