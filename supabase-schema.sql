@@ -144,3 +144,4 @@ LEFT JOIN categories c ON p.category_id = c.id;
 -- 3. Copia las keys de API a tu archivo .env.local
 
 
+
