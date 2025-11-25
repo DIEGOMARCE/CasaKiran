@@ -51,3 +51,4 @@ export function getWhatsAppUrl(message: string): string {
   return `https://wa.me/${phone}?text=${message}`;
 }
 
+

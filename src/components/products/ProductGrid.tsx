@@ -33,3 +33,4 @@ export function ProductGrid({ products, columns = 4 }: ProductGridProps) {
   );
 }
 
+
