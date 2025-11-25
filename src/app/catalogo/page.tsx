@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { createClient } from "@/lib/supabase/server";
+import { Category } from "@/types";
 
 export const metadata: Metadata = {
   title: "Catálogo | Casa Kiran",
@@ -35,7 +36,7 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
 
   // Filtrar por categoría si está seleccionada
   if (selectedCategory && categories) {
-    const category = categories.find((c: any) => c.slug === selectedCategory);
+    const category = categories.find((c: Category) => c.slug === selectedCategory);
     if (category) {
       query = query.eq("category_id", category.id);
     }
@@ -76,7 +77,7 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
                   Todas
                 </a>
               </li>
-              {categories?.map((category: any) => (
+              {categories?.map((category: Category) => (
                 <li key={category.id}>
                   <a
                     href={`/catalogo?categoria=${category.slug}`}
