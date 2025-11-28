@@ -1,8 +1,8 @@
-Get-ChildItem -Recurse -File | 
-Where-Object { 
+Get-ChildItem -Recurse -File |
+Where-Object {
     $_.Extension -match '\.(ts|tsx|js|jsx|json|md|txt|yml|yaml|env|ps1|sql)$' -and
     $_.FullName -notmatch 'node_modules|\.next|\.git'
-} | 
+} |
 ForEach-Object {
     $content = Get-Content $_.FullName -Raw
     if ($content) {
