@@ -8,7 +8,7 @@ import logoImage from "@/images/logocasakiran.jpg";
 
 export default async function HomePage() {
   const supabase = await createClient();
-  
+
   // Obtener productos destacados
   const { data: featuredProducts } = await supabase
     .from("products")
@@ -17,6 +17,14 @@ export default async function HomePage() {
     .eq("featured", true)
     .order("created_at", { ascending: false })
     .limit(4);
+
+  // Obtener TODOS los productos activos
+  const { data: allProducts } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .order("created_at", { ascending: false })
+    .limit(12); // Limitar a 12 para no sobrecargar
 
   return (
     <div className="animate-fade-in">
@@ -40,7 +48,7 @@ export default async function HomePage() {
               </h1>
             </div>
             <p className="text-lg lg:text-xl text-neutral-600 mb-8 leading-relaxed">
-              {siteConfig.tagline}. Velas artesanales elaboradas con ingredientes 
+              {siteConfig.tagline}. Velas artesanales elaboradas con ingredientes
               naturales para crear momentos especiales en tu hogar.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -52,7 +60,7 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          
+
           <div className="relative w-full max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-2xl bg-neutral-200">
              <div className="relative aspect-[2.35/1] w-full">
                 <Image
@@ -70,34 +78,61 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Featured Products - Solo si existen */}
+      {featuredProducts && featuredProducts.length > 0 && (
+        <section className="container-custom py-12 lg:py-16">
+          <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-8 lg:p-12">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <svg className="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <h2 className="text-2xl lg:text-3xl font-light text-center">Productos Destacados</h2>
+              <svg className="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </div>
+            <p className="text-center text-neutral-600 mb-8">Nuestras velas más populares y especiales</p>
+            <ProductGrid products={featuredProducts} columns={4} />
+          </div>
+        </section>
+      )}
+
+      {/* All Products */}
       <section className="container-custom py-16 lg:py-24">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl lg:text-3xl font-light">Productos destacados</h2>
-            <p className="text-neutral-500 mt-2">Nuestras velas más populares</p>
+            <h2 className="text-2xl lg:text-3xl font-light">Nuestros Productos</h2>
+            <p className="text-neutral-500 mt-2">Explora nuestra colección completa</p>
           </div>
           <Link
             href="/catalogo"
             className="text-sm font-medium hover:underline hidden sm:block"
           >
-            Ver todo →
+            Ver catálogo completo →
           </Link>
         </div>
-        
-        {featuredProducts && featuredProducts.length > 0 ? (
-          <ProductGrid products={featuredProducts} columns={4} />
+
+        {allProducts && allProducts.length > 0 ? (
+          <>
+            <ProductGrid products={allProducts} columns={4} />
+            <div className="text-center mt-12">
+              <Link href="/catalogo" className="btn-primary inline-flex items-center gap-2">
+                Ver catálogo completo
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </>
         ) : (
           <div className="text-center py-12 text-neutral-500">
-            <p>Pronto habrá productos destacados disponibles.</p>
+            <svg className="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <p className="mb-4">Pronto habrá productos disponibles</p>
+            <p className="text-sm text-neutral-400">Estamos preparando nuestra colección para ti</p>
           </div>
         )}
-        
-        <div className="text-center mt-8 sm:hidden">
-          <Link href="/catalogo" className="btn-secondary">
-            Ver todo el catálogo
-          </Link>
-        </div>
       </section>
 
       {/* Features */}

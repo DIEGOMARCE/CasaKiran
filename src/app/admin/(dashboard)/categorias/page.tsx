@@ -14,11 +14,6 @@ export default function CategoriasPage() {
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    checkAuth();
-    fetchCategories();
-  }, []);
-
   const checkAuth = async () => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -26,6 +21,12 @@ export default function CategoriasPage() {
       router.push('/admin/login');
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+    fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchCategories = async () => {
     const supabase = createClient();

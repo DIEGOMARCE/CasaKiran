@@ -13,6 +13,18 @@ export function ProductGrid({ products, columns = 4 }: ProductGridProps) {
     4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
   };
 
+  // Validación: si products es null o undefined
+  if (!products || !Array.isArray(products)) {
+    return (
+      <div className="text-center py-12">
+        <svg className="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p className="text-neutral-500">Error al cargar productos</p>
+      </div>
+    );
+  }
+
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
@@ -24,9 +36,23 @@ export function ProductGrid({ products, columns = 4 }: ProductGridProps) {
     );
   }
 
+  // Filtrar productos válidos (que tengan al menos id)
+  const validProducts = products.filter(product => product && product.id);
+
+  if (validProducts.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <svg className="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p className="text-neutral-500">No hay productos válidos</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`grid ${gridCols[columns]} gap-6`}>
-      {products.map((product) => (
+      {validProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>

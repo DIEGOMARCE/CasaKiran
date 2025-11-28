@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { CartItem, Product } from "@/types";
+import { Toast } from "@/components/ui/Toast";
 
 interface CartContextType {
   items: CartItem[];
@@ -23,6 +24,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   // Cargar carrito desde localStorage
   useEffect(() => {
@@ -47,15 +49,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addItem = (product: Product, quantity: number = 1) => {
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id);
-      
+
       if (existingItem) {
+        setToast({ message: `${product.name} actualizado en el carrito`, type: "success" });
         return prevItems.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      
+
+      setToast({ message: `${product.name} agregado al carrito`, type: "success" });
       return [...prevItems, { product, quantity }];
     });
   };
@@ -69,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(productId);
       return;
     }
-    
+
     setItems((prevItems) =>
       prevItems.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item
@@ -104,6 +108,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </CartContext.Provider>
   );
 }

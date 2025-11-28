@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { siteConfig } from "@/lib/config";
@@ -9,7 +9,17 @@ import { siteConfig } from "@/lib/config";
 export function Header() {
   const { getItemCount, setIsOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isPulsing, setIsPulsing] = useState(false);
   const itemCount = getItemCount();
+
+  // Animación cuando cambia el contador
+  useEffect(() => {
+    if (itemCount > 0) {
+      setIsPulsing(true);
+      const timer = setTimeout(() => setIsPulsing(false), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [itemCount]);
 
   const navigation = [
     { name: "Inicio", href: "/" },
@@ -48,7 +58,7 @@ export function Header() {
               {/* Cart Button */}
               <button
                 onClick={() => setIsOpen(true)}
-                className="relative p-2 hover:bg-neutral-100 transition-colors duration-200"
+                className="relative p-2 hover:bg-neutral-100 rounded-lg transition-colors duration-200"
                 aria-label="Abrir carrito"
               >
                 <svg
@@ -65,7 +75,11 @@ export function Header() {
                   />
                 </svg>
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium bg-black text-white rounded-full">
+                  <span
+                    className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium bg-black text-white rounded-full transition-transform ${
+                      isPulsing ? 'animate-bounce scale-110' : ''
+                    }`}
+                  >
                     {itemCount}
                   </span>
                 )}
