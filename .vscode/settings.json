@@ -1,0 +1,15 @@
+{
+  "files.eol": "\r\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": false,
+  "[typescript]": {
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true
+  },
+  "[typescriptreact]": {
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true
+  }
+}

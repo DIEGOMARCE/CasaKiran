@@ -142,4 +142,3 @@ LEFT JOIN categories c ON p.category_id = c.id;
 -- 1. Ve a Authentication -> Users y crea un usuario admin
 -- 2. Ve a Storage -> Create new bucket "product-images" (público)
 -- 3. Copia las keys de API a tu archivo .env.local
-

@@ -349,5 +349,3 @@ src/
 ---
 
 *Última actualización: Noviembre 2025*
-
-

@@ -69,4 +69,3 @@ export function ProductCard({ product }: ProductCardProps) {
     </Link>
   );
 }
-

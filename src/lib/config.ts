@@ -50,4 +50,3 @@ export function getWhatsAppUrl(message: string): string {
   const phone = siteConfig.whatsapp.replace(/\D/g, "");
   return `https://wa.me/${phone}?text=${message}`;
 }
-
