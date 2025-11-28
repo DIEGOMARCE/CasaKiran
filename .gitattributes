@@ -1,0 +1,24 @@
+# Normalizar line endings para todos los archivos de texto
+* text=auto eol=lf
+
+# Archivos específicos
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.sql text eol=lf
+*.ps1 text eol=lf
+
+# Imágenes como binarios (no tocar)
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
+*.webp binary
+
