@@ -1,60 +1,29 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+export function middleware(request: NextRequest) {
+  // Solo verificar rutas de admin (excepto login)
+  const { pathname } = request.nextUrl;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
+    // Verificar si hay cookies de sesión de Supabase
+    const cookies = request.cookies;
+    const hasAuthCookie =
+      cookies.has("sb-ncweefuufbkrquzmmgma-auth-token") ||
+      cookies.getAll().some(cookie => cookie.name.startsWith("sb-") && cookie.name.includes("auth-token"));
 
-  // Refrescar la sesión
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Solo proteger rutas de admin
-  if (request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login")) {
-    if (!user) {
+    // Si no hay cookie de autenticación, redirigir a login
+    if (!hasAuthCookie) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
       return NextResponse.redirect(url);
     }
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public assets
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/admin/:path*",
   ],
 };
