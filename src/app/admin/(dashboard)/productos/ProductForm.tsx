@@ -303,3 +303,4 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     </form>
   );
 }
+

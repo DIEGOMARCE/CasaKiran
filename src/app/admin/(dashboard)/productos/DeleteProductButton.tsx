@@ -82,3 +82,4 @@ export function DeleteProductButton({ productId, productName }: DeleteProductBut
     </>
   );
 }
+
