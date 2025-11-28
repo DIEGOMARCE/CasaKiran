@@ -1,18 +1,18 @@
-# Normalizar line endings para todos los archivos de texto
-* text=auto eol=lf
+# Forzar CRLF para Windows en todos los archivos de texto
+* text=auto eol=crlf
 
 # Archivos específicos
-*.ts text eol=lf
-*.tsx text eol=lf
-*.js text eol=lf
-*.jsx text eol=lf
-*.json text eol=lf
-*.css text eol=lf
-*.scss text eol=lf
-*.html text eol=lf
-*.md text eol=lf
-*.sql text eol=lf
-*.ps1 text eol=lf
+*.ts text eol=crlf
+*.tsx text eol=crlf
+*.js text eol=crlf
+*.jsx text eol=crlf
+*.json text eol=crlf
+*.css text eol=crlf
+*.scss text eol=crlf
+*.html text eol=crlf
+*.md text eol=crlf
+*.sql text eol=crlf
+*.ps1 text eol=crlf
 
 # Imágenes como binarios (no tocar)
 *.jpg binary
@@ -21,4 +21,3 @@
 *.gif binary
 *.ico binary
 *.webp binary
-
