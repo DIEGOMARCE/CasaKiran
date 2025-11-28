@@ -50,7 +50,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
     try {
       const supabase = createClient();
-      
+
       // Generar nombre único
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -73,7 +73,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       setFormData((prev) => ({ ...prev, image_url: publicUrl }));
     } catch (err) {
       console.error("Error uploading image:", err);
-      setError("Error al subir la imagen. Verifica que el bucket 'product-images' exista en Supabase.");
+      setError("No se pudo subir la imagen. Verifica que el bucket 'product-images' exista en Supabase Storage.");
     } finally {
       setUploadingImage(false);
     }
@@ -86,7 +86,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
     try {
       const supabase = createClient();
-      
+
       const productData = {
         name: formData.name,
         description: formData.description,
@@ -119,7 +119,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       router.refresh();
     } catch (err) {
       console.error("Error saving product:", err);
-      setError("Error al guardar el producto");
+      setError("No se pudo guardar el producto. Verifica que todos los campos sean correctos.");
     } finally {
       setLoading(false);
     }
@@ -216,7 +216,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
               id="price"
               type="number"
               step="0.01"
-              min="0"
+              min="0.01"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               className="input"
@@ -226,7 +226,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           </div>
           <div>
             <label htmlFor="stock" className="block text-sm font-medium mb-2">
-              Stock
+              Stock (informativo)
             </label>
             <input
               id="stock"
@@ -235,8 +235,11 @@ export function ProductForm({ product, categories }: ProductFormProps) {
               value={formData.stock}
               onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
               className="input"
-              placeholder="0"
+              placeholder="Cantidad disponible"
             />
+            <p className="text-xs text-neutral-500 mt-1">
+              Cuando no haya stock, elimina el producto
+            </p>
           </div>
         </div>
 

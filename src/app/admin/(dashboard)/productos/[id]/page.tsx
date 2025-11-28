@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "../ProductForm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 interface EditProductPageProps {
   params: Promise<{ id: string }>;
@@ -9,7 +9,13 @@ interface EditProductPageProps {
 export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
   const supabase = await createClient();
-  
+
+  // Verificar autenticación
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect('/admin/login');
+  }
+
   const { data: product, error } = await supabase
     .from("products")
     .select("*")
@@ -36,13 +42,3 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-

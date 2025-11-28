@@ -16,18 +16,45 @@ export function DeleteProductButton({ productId, productName }: DeleteProductBut
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    
+
     try {
       const supabase = createClient();
+
+      // Primero obtener la información del producto para acceder a la imagen
+      const { data: product } = await supabase
+        .from("products")
+        .select("image_url")
+        .eq("id", productId)
+        .single();
+
+      // Eliminar el producto de la base de datos
       const { error } = await supabase
         .from("products")
         .delete()
         .eq("id", productId);
 
       if (error) {
-        alert("Error al eliminar el producto");
-        console.error(error);
+        console.error("Error al eliminar el producto:", error);
+        alert("No se pudo eliminar el producto. Por favor, intenta de nuevo.");
         return;
+      }
+
+      // Si el producto tenía imagen, eliminarla del storage
+      if (product?.image_url) {
+        try {
+          // Extraer el nombre del archivo de la URL
+          const imageUrl = product.image_url;
+          const fileName = imageUrl.split('/').pop();
+
+          if (fileName) {
+            await supabase.storage
+              .from("product-images")
+              .remove([fileName]);
+          }
+        } catch (storageError) {
+          // No bloquear la eliminación si falla borrar la imagen
+          console.error("Error al eliminar imagen:", storageError);
+        }
       }
 
       router.refresh();
@@ -57,7 +84,7 @@ export function DeleteProductButton({ productId, productName }: DeleteProductBut
           <div className="bg-white p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-medium mb-2">¿Eliminar producto?</h3>
             <p className="text-neutral-600 text-sm mb-6">
-              ¿Estás seguro de que deseas eliminar <strong>{productName}</strong>? 
+              ¿Estás seguro de que deseas eliminar <strong>{productName}</strong>?
               Esta acción no se puede deshacer.
             </p>
             <div className="flex gap-3 justify-end">

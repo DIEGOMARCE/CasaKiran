@@ -1,9 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "../ProductForm";
+import { redirect } from "next/navigation";
 
 export default async function NewProductPage() {
   const supabase = await createClient();
-  
+
+  // Verificar autenticación
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect('/admin/login');
+  }
+
   const { data: categories } = await supabase
     .from("categories")
     .select("*")

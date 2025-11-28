@@ -1,9 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
-  
+
+  // Verificar autenticación
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect('/admin/login');
+  }
+
   // Obtener estadísticas
   const { count: productCount } = await supabase
     .from("products")
@@ -68,7 +75,7 @@ export default async function AdminDashboardPage() {
       <div className="mt-8 p-6 bg-neutral-100 border border-neutral-200">
         <h3 className="font-medium mb-2">¿Necesitas ayuda?</h3>
         <p className="text-sm text-neutral-600">
-          Desde este panel puedes gestionar todos los productos de tu tienda. 
+          Desde este panel puedes gestionar todos los productos de tu tienda.
           Usa el menú lateral para navegar entre las diferentes secciones.
         </p>
       </div>

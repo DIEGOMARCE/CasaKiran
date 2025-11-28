@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Category } from "@/types";
+import { useRouter } from "next/navigation";
 
 export default function CategoriasPage() {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -13,8 +15,17 @@ export default function CategoriasPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    checkAuth();
     fetchCategories();
   }, []);
+
+  const checkAuth = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/admin/login');
+    }
+  };
 
   const fetchCategories = async () => {
     const supabase = createClient();
@@ -22,7 +33,7 @@ export default function CategoriasPage() {
       .from("categories")
       .select("*")
       .order("name");
-    
+
     setCategories(data || []);
     setLoading(false);
   };
@@ -59,6 +70,7 @@ export default function CategoriasPage() {
       resetForm();
     } catch (error) {
       console.error("Error saving category:", error);
+      alert("No se pudo guardar la categoría. Por favor, intenta de nuevo.");
     } finally {
       setSaving(false);
     }

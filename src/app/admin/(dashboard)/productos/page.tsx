@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatPrice } from "@/lib/config";
 import { DeleteProductButton } from "./DeleteProductButton";
+import { redirect } from "next/navigation";
 
 interface ProductWithCategory {
   id: string;
@@ -21,7 +22,13 @@ interface ProductWithCategory {
 
 export default async function ProductsPage() {
   const supabase = await createClient();
-  
+
+  // Verificar autenticación
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect('/admin/login');
+  }
+
   const { data, error } = await supabase
     .from("products")
     .select(`

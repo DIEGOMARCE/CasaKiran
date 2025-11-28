@@ -60,53 +60,53 @@ ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para CATEGORIES
 -- Lectura pública
-CREATE POLICY "Categories are viewable by everyone" 
-  ON categories FOR SELECT 
+CREATE POLICY "Categories are viewable by everyone"
+  ON categories FOR SELECT
   USING (true);
 
--- Solo usuarios autenticados pueden modificar
-CREATE POLICY "Categories can be inserted by authenticated users" 
-  ON categories FOR INSERT 
-  TO authenticated 
-  WITH CHECK (true);
+-- Solo el admin puede modificar (usando email específico)
+CREATE POLICY "Categories can be inserted by admin only"
+  ON categories FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
-CREATE POLICY "Categories can be updated by authenticated users" 
-  ON categories FOR UPDATE 
-  TO authenticated 
-  USING (true);
+CREATE POLICY "Categories can be updated by admin only"
+  ON categories FOR UPDATE
+  TO authenticated
+  USING (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
-CREATE POLICY "Categories can be deleted by authenticated users" 
-  ON categories FOR DELETE 
-  TO authenticated 
-  USING (true);
+CREATE POLICY "Categories can be deleted by admin only"
+  ON categories FOR DELETE
+  TO authenticated
+  USING (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
 -- Políticas para PRODUCTS
 -- Lectura pública solo de productos activos
-CREATE POLICY "Active products are viewable by everyone" 
-  ON products FOR SELECT 
+CREATE POLICY "Active products are viewable by everyone"
+  ON products FOR SELECT
   USING (active = true);
 
--- Usuarios autenticados pueden ver todos los productos
-CREATE POLICY "All products are viewable by authenticated users" 
-  ON products FOR SELECT 
-  TO authenticated 
-  USING (true);
+-- Admin puede ver todos los productos
+CREATE POLICY "All products are viewable by admin"
+  ON products FOR SELECT
+  TO authenticated
+  USING (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
--- Solo usuarios autenticados pueden modificar
-CREATE POLICY "Products can be inserted by authenticated users" 
-  ON products FOR INSERT 
-  TO authenticated 
-  WITH CHECK (true);
+-- Solo el admin puede modificar productos
+CREATE POLICY "Products can be inserted by admin only"
+  ON products FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
-CREATE POLICY "Products can be updated by authenticated users" 
-  ON products FOR UPDATE 
-  TO authenticated 
-  USING (true);
+CREATE POLICY "Products can be updated by admin only"
+  ON products FOR UPDATE
+  TO authenticated
+  USING (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
-CREATE POLICY "Products can be deleted by authenticated users" 
-  ON products FOR DELETE 
-  TO authenticated 
-  USING (true);
+CREATE POLICY "Products can be deleted by admin only"
+  ON products FOR DELETE
+  TO authenticated
+  USING (auth.jwt() ->> 'email' = 'diegosanhueza@hotmail.es');
 
 -- 4. STORAGE BUCKET PARA IMÁGENES
 -- =============================================
@@ -115,7 +115,7 @@ CREATE POLICY "Products can be deleted by authenticated users"
 -- Configurar como público para que las imágenes sean accesibles
 
 -- Política de storage (ejecutar en el SQL Editor):
--- INSERT INTO storage.buckets (id, name, public) 
+-- INSERT INTO storage.buckets (id, name, public)
 -- VALUES ('product-images', 'product-images', true);
 
 -- 5. ÍNDICES PARA MEJOR RENDIMIENTO
@@ -128,7 +128,7 @@ CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
 -- 6. VISTA PARA PRODUCTOS CON CATEGORÍA
 -- =============================================
 CREATE OR REPLACE VIEW products_with_category AS
-SELECT 
+SELECT
   p.*,
   c.name as category_name,
   c.slug as category_slug
